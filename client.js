@@ -27,6 +27,13 @@ class WhatsappClient {
       this.ready = true;
     });
 
+    this.client.on('disconnected', (reason) => {
+      console.log('Client was logged out', reason);
+      this.ready = false;
+      this.qrGenerated = false;
+      this.client.initialize();
+    })
+
     this.client.initialize();
   }
 
@@ -40,24 +47,28 @@ class WhatsappClient {
 
   sendMessage(number, message) {
     return new Promise((resolve, reject) => {
-      const fixedNumber = number + '@c.us';
-      this.client.isRegisteredUser(fixedNumber)
-        .then((isRegistered) => {
-          if (isRegistered) {
-            this.client.sendMessage(fixedNumber, message)
-              .then((response) => {
-                resolve(response);
-              })
-              .catch((error) => {
-                reject(error);
-              });
-          } else {
-            reject("User is not registered");
-          }
-        })
-        .catch((error) => {
-          reject(error);
-        });
+      if (!number.startsWith('598')) {
+        reject("Invalid number");
+      } else {
+        const fixedNumber = number + '@c.us';
+        this.client.isRegisteredUser(fixedNumber)
+          .then((isRegistered) => {
+            if (isRegistered) {
+              this.client.sendMessage(fixedNumber, message)
+                .then((response) => {
+                  resolve(response);
+                })
+                .catch((error) => {
+                  reject(error);
+                });
+            } else {
+              reject("User is not registered");
+            }
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      }
     });
   }
 
