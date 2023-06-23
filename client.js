@@ -15,7 +15,7 @@ class WhatsappClient {
     this.client.on('qr', (QRText) => {
       QRCode.toFile('./whatsapp-qr.png', QRText, {
         errorCorrectionLevel: 'H'
-      }, function (err) {
+      }, (err) => {
         if (err) throw err;
         console.log('QR Code generated!');
         this.qrGenerated = true;
