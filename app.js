@@ -43,7 +43,6 @@ app.get("/qr", (req, res) => {
 app.post("/send-verification-code", (req, res) => {
   if (whatsappClient.isReady()) {
     if (req.query.secret === process.env.SEND_MESSAGE_SECRET) {
-      console.log(req.query)
       whatsappClient.sendVerificationCode(req.query.number, req.query.code)
         .then((response) => {
           res.status(200).send(response);
